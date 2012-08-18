@@ -14,4 +14,4 @@ NDK は、 v9 辺りを使用して開発を進めていきますが、気が変わるかもしれません。
 ------------------
 ![Screenshot][ss]
 
-[ss]: screenshot.jpg "Screenshot"
+[ss]: https://github.com/lailai/MikuMikuPlayer/blob/master/screenshot.jpg?raw=true "Screenshot"

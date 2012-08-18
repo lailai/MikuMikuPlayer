@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2012 lailai. All Rights Reserved.
+ */
+
 #ifndef _MIKUMIKUPLAYER_H_
 #define _MIKUMIKUPLAYER_H_
 

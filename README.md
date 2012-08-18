@@ -6,4 +6,6 @@ MikuMikuDance ‚ÅŽg—p‚³‚ê‚é PMD ƒtƒ@ƒCƒ‹‚Æ VMD ƒtƒ@ƒCƒ‹‚ð“Ç‚Ýž‚Ý Android ’[––‚Å•
 •`‰æ‚É‚Í OpenGL for Embedded Systems (OpenGL ES) 2.0 ‚ðŽg—p‚µ‚Ü‚·B
 ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Ì\¬‚ÍA GLSurfaceView ‚ÅƒT[ƒtƒFƒX‚ðì¬‚µA•`‰æˆ—‚Í NDK ‚É“Š‚°‚Ü‚·B
 NDK ‚ÍA v9 •Ó‚è‚ðŽg—p‚µ‚ÄŠJ”­‚ði‚ß‚Ä‚¢‚«‚Ü‚·‚ªA‹C‚ª•Ï‚í‚é‚©‚à‚µ‚ê‚Ü‚¹‚ñB
-Œ»Ý‚ÍAÅ¬‚Ì\¬ (glClearColor ŠÖ”‚Å”wŒiF‚ðŽw’è‚µA glClear ŠÖ”‚Å”wŒiF‚Ì“h‚è‚Â‚Ô‚µ) ‚Å‚·B
+Œ»Ý‚ÍAŽOŠpŒ`‚Ìƒ|ƒŠƒSƒ“‚ð2–‡‡‚í‚¹‚ÄŽlŠpŒ`‚ðì¬‚µA‚»‚±‚É“K“–‚ÈƒeƒNƒXƒ`ƒƒ‚ð“\‚è•t‚¯‚Ä‚¢‚Ü‚·B
+Žæ“¾‚·‚é‰æ‘œƒtƒ@ƒCƒ‹‚Í /sdcard/MMD/creeper_512x512.bmp ‚Å‚·B
+ƒtƒ@ƒCƒ‹–¼‚ÍŒÅ’è‚ÅA‚»‚±‚É24ƒrƒbƒg‚Ì BMP Œ`Ž®‚Ìƒtƒ@ƒCƒ‹‚ð”z’u‚·‚ê‚ÎŽÀsŽž‚É•`‰æ‚³‚ê‚Ü‚·B

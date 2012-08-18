@@ -18,6 +18,7 @@ JNIEXPORT void JNICALL Java_net_lailai_android_mmd_mikumikuplayer_MMPRenderer_ND
 
 JNIEXPORT void JNICALL Java_net_lailai_android_mmd_mikumikuplayer_MMPRenderer_NDKonSurfaceChanged(JNIEnv *env, jobject obj, jint width, jint height)
 {
+	renderer.changed(width, height);
 }
 
 JNIEXPORT void JNICALL Java_net_lailai_android_mmd_mikumikuplayer_MMPRenderer_NDKonSurfaceCreated(JNIEnv *env, jobject obj)

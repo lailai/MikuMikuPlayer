@@ -9,13 +9,24 @@
 #include <GLES2/gl2ext.h>
 #include <iostream>
 
+#include "CPmdRenderer.h"
+
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
 using namespace std;
+
+enum {
+    ATTRIB_VERTEX,
+    ATTRIB_NORMAL,
+    ATTRIB_UV
+};
 
 enum {
     UNIFORM_PROJ_MAT,
     UNIFORM_VIEW_MAT,
     UNIFORM_PERSPECTIVE_MAT,
     UNIFORM_TEXTURE,
+    UNIFORM_COLOR,
     NUM_UNIFORMS
 };
 
@@ -43,6 +54,8 @@ private:
     GLuint uniforms[NUM_UNIFORMS];
     GLfloat viewMatrix[16];
     GLfloat perspectiveMatrix[16];
+    CPmdRenderer *pmdRenderer;
+    void dumpFps(void);
 };
 
 #endif

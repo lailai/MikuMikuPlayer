@@ -6,19 +6,14 @@
 #include <GLES2/gl2ext.h>
 #include <android/log.h>
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 #include <math.h>
 
 #include "CMMPRenderer.h"
 #include "bitmap24.h"
 #include "glu.h"
-
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
-
-enum {
-    ATTRIB_VERTEX,
-    ATTRIB_COLOR,
-    ATTRIB_UV
-};
+#include "CPmdRenderer.h"
 
 using namespace std;
 
@@ -30,34 +25,38 @@ CMMPRenderer::CMMPRenderer(void)
     vertexShader = "\
             attribute vec2 a_TextureCoord;\
             attribute highp vec4 a_Position;\
-            attribute vec4 a_Color;\
+            attribute vec4 a_Normal;\
             uniform mediump mat4 u_ProjectionMatrix;\
             uniform mediump mat4 u_ViewMatrix;\
             uniform mediump mat4 u_PerspectiveMatrix;\
             varying vec2 v_TextureCoord;\
-            varying vec4 v_Color;\
             void main(void)\
             {\
                 gl_Position = u_PerspectiveMatrix * u_ViewMatrix * u_ProjectionMatrix * a_Position;\
                 v_TextureCoord = a_TextureCoord;\
-                v_Color = a_Color;\
             }\
             ";
 
     fragmentShader = "\
             precision mediump float;\
+            uniform vec4 u_Color;\
             uniform sampler2D u_Texture;\
             varying vec2 v_TextureCoord;\
-            varying vec4 v_Color;\
             void main(void)\
             {\
-                gl_FragColor = texture2D(u_Texture, v_TextureCoord);\
+                if (u_Color.x == 0.0 && u_Color.y == 0.0 && u_Color.z == 0.0 && u_Color.w == 0.0) {\
+                    gl_FragColor = texture2D(u_Texture, v_TextureCoord);\
+                } else {\
+                    gl_FragColor = texture2D(u_Texture, v_TextureCoord);\
+                    gl_FragColor = vec4(gl_FragColor.xyz, u_Color.w);\
+                }\
             }\
             ";
 
     hProgram = 0;
     hVbo = 0;
     hIbo = 0;
+    pmdRenderer = NULL;
 }
 
 /**
@@ -65,6 +64,10 @@ CMMPRenderer::CMMPRenderer(void)
  */
 CMMPRenderer::~CMMPRenderer(void)
 {
+    if (pmdRenderer != NULL) {
+        delete pmdRenderer;
+        pmdRenderer = NULL;
+    }
 }
 
 /**
@@ -79,19 +82,23 @@ void CMMPRenderer::init(void)
     uniforms[UNIFORM_VIEW_MAT] = glGetUniformLocation(hProgram, "u_ViewMatrix");
     uniforms[UNIFORM_PERSPECTIVE_MAT] = glGetUniformLocation(hProgram, "u_PerspectiveMatrix");
     uniforms[UNIFORM_TEXTURE] = glGetUniformLocation(hProgram, "u_Texture");
+    uniforms[UNIFORM_COLOR] = glGetUniformLocation(hProgram, "u_Color");
 
+    // クリーパー用ポリゴン
     GLfloat  pfVertices[] = {
-            -10.0f, 20.0f, -10.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-            -10.0f, 0.0f, -10.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-            10.0f, 0.0f, -10.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-            10.0f, 20.0f, -10.0f, 1.0f, 1.0f, .0f, 1.0f, 1.0f, 0.0f};
-    GLushort pIndices[] = {0, 1, 2, 0, 2, 3};
+            -10.0f, 20.0f, -10.0f, 1.0f, 0.0f,
+            -10.0f, 0.0f, -10.0f, 1.0f, 1.0f,
+            10.0f, 0.0f, -10.0f, 0.0f, 1.0f,
+            10.0f, 20.0f, -10.0f, 0.0f, 0.0f};
+    GLushort pIndices[] = {0, 2, 1, 0, 3, 2};
     glGenBuffers(1, &hVbo);
     glBindBuffer(GL_ARRAY_BUFFER, hVbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 36, pfVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 20, pfVertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
     glGenBuffers(1, &hIbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, hIbo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort) * 6, pIndices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     // テクスチャの準備
     glGenTextures(1, &hTexture);
@@ -106,6 +113,9 @@ void CMMPRenderer::init(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    pmdRenderer = new CPmdRenderer();
+    pmdRenderer->load(string("/sdcard/MMD/pmd/Normal.pmd"));
 }
 
 /**
@@ -132,6 +142,24 @@ void CMMPRenderer::render(void)
             0.0f, 1.0f, 0.0f, 0.0f,
             0.0f, 0.0f, 1.0f, 0.0f,
             0.0f, 0.0f, 0.0f, 1.0f};
+    GLfloat color[] = {0.0f, 0.0f, 0.0f, 0.0f};
+
+    // 必要な機能の有効化
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
+
+    // ポリゴンの向き(時計回り)？
+    glFrontFace(GL_CW);
+
+    // カリング(表のみ描画)
+    glCullFace(GL_FRONT);
+
+    // テクスチャのメモリアラインメント設定
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    // アルファブレンド
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glBindBuffer(GL_ARRAY_BUFFER, hVbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, hIbo);
@@ -139,13 +167,11 @@ void CMMPRenderer::render(void)
 
     // 頂点座標属性の有効化
     glEnableVertexAttribArray(ATTRIB_VERTEX);
-    glEnableVertexAttribArray(ATTRIB_COLOR);
     glEnableVertexAttribArray(ATTRIB_UV);
 
     // 頂点座標属性のポインタの設定
-    glVertexAttribPointer(ATTRIB_VERTEX, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 9, BUFFER_OFFSET(0));
-    glVertexAttribPointer(ATTRIB_COLOR, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 9, BUFFER_OFFSET(sizeof(GLfloat) * 3));
-    glVertexAttribPointer(ATTRIB_UV, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 9, BUFFER_OFFSET(sizeof(GLfloat) * 7));
+    glVertexAttribPointer(ATTRIB_VERTEX, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, BUFFER_OFFSET(0));
+    glVertexAttribPointer(ATTRIB_UV, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, BUFFER_OFFSET(sizeof(GLfloat) * 3));
 
     // 視点の設定
     static float g_fRad = 0.0f;
@@ -155,17 +181,26 @@ void CMMPRenderer::render(void)
     } else if (g_fRad < 0) {
         g_fRad += 2 * 3.14159265f;
     }
-    gluLookAt(50.0f * sin(g_fRad), 20.0f, -50.0f * cos(g_fRad), 0.0f, 12.0f, 0.0f, 0.0f, 1.0f, 0.0f, viewMatrix);
+    gluLookAt(50.0f * sin(g_fRad), 20.0f, 50.0f * cos(g_fRad), 0.0f, 12.0f, 0.0f, 0.0f, 1.0f, 0.0f, viewMatrix);
 
     // 変数の設定
     glUniformMatrix4fv(uniforms[UNIFORM_PROJ_MAT], 1, GL_FALSE, pfIdentity);
     glUniformMatrix4fv(uniforms[UNIFORM_VIEW_MAT], 1, GL_FALSE, viewMatrix);
+    glUniform4fv(uniforms[UNIFORM_COLOR], 1, color);
 
+    // クリーパーの描画
     glEnable(GL_TEXTURE_2D);
     glActiveTexture(GL_TEXTURE0);
     glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, NULL);
     glDisable(GL_TEXTURE_2D);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    pmdRenderer->render(uniforms);
+
+    dumpFps();
 }
 
 /**
@@ -209,7 +244,7 @@ GLuint CMMPRenderer::loadProgram(GLuint hVertexShader, GLuint hFragmentShader)
     glAttachShader(hProg, hVertexShader);
     glAttachShader(hProg, hFragmentShader);
     glBindAttribLocation(hProg, ATTRIB_VERTEX, "a_Position");
-    glBindAttribLocation(hProg, ATTRIB_COLOR, "a_Color");
+    glBindAttribLocation(hProg, ATTRIB_NORMAL, "a_Normal");
     glBindAttribLocation(hProg, ATTRIB_UV, "a_TextureCoord");
     glLinkProgram(hProg);
     GLint bLinked;
@@ -232,4 +267,20 @@ GLuint CMMPRenderer::loadProgram(GLuint hVertexShader, GLuint hFragmentShader)
     }
     glUseProgram(hProg);
     return hProg;
+}
+
+void CMMPRenderer::dumpFps(void)
+{
+    static int frameNum = 0;
+    static int fps = 0;
+    static clock_t start = clock();
+    clock_t now = clock();
+    clock_t diff = now - start;
+    if (diff >= CLOCKS_PER_SEC) {
+        fps = frameNum;
+        frameNum = 0;
+        start = now;
+        __android_log_print(ANDROID_LOG_INFO, "MMP", "fps = %d", fps);
+    }
+    frameNum++;
 }

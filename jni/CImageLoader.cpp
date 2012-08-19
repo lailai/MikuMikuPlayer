@@ -2,6 +2,7 @@
  * Copyright (c) 2012 lailai. All Rights Reserved.
  */
 
+#include <android/log.h>
 #include <iostream>
 
 #include "CImageLoader.h"
@@ -59,16 +60,17 @@ void CImageLoader::setImage(string filePath)
 /**
  * 画像ファイルを読み込みます。
  */
-void CImageLoader::loadImage(void)
+int CImageLoader::loadImage(void)
 {
     string::size_type offset = imageFilePath.rfind(".bmp");
     if (offset == string::npos) {
         offset = imageFilePath.rfind(".BMP");
     }
     if (offset == string::npos) {
-        return;
+        return -1;
     }
     if (imageFilePath.substr(offset) == string(".bmp") || imageFilePath.substr(offset) == string(".BMP")) {
+__android_log_print(ANDROID_LOG_INFO, "MMP", "imageFilePath = %s", imageFilePath.c_str());
         CBitmap24 *bitmap = new CBitmap24();
         bitmap->Load(imageFilePath);
         imageWidth = bitmap->GetWidth();
@@ -79,18 +81,22 @@ void CImageLoader::loadImage(void)
         for (int i = 0; i < imageWidth * imageHeight * (imageDepth / 8); i++) {
             imageData[i] = tmp[i];
         }
+        delete bitmap;
     }
+    return 0;
 }
 
 /**
  * 画像データを取得します。
  * @param imageDataBuffer 予めメモリを確保したバッファ
  */
-void CImageLoader::getImageData(unsigned char *imageDataBuffer)
+//void CImageLoader::getImageData(unsigned char *imageDataBuffer)
+unsigned char *CImageLoader::getImageData(void)
 {
-    for (int i = 0; i < imageWidth * imageHeight * (imageDepth / 8); i++) {
-        imageDataBuffer[i] = imageData[i];
-    }
+//    for (int i = 0; i < imageWidth * imageHeight * (imageDepth / 8); i++) {
+//        imageDataBuffer[i] = imageData[i];
+//    }
+	return imageData;
 }
 
 /**

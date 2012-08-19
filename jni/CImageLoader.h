@@ -20,8 +20,9 @@ public:
     CImageLoader(string filePath);
     ~CImageLoader(void);
     void setImage(string filePath);
-    void loadImage(void);
-    void getImageData(unsigned char *);
+    int loadImage(void);
+//    void getImageData(unsigned char *);
+    unsigned char *getImageData(void);
     int getWidth(void);
     int getHeight(void);
     int getDepth(void);

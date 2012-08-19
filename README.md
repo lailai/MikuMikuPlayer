@@ -6,10 +6,21 @@ MikuMikuDance ‚Åg—p‚³‚ê‚é PMD ƒtƒ@ƒCƒ‹‚Æ VMD ƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚İ Android ’[––‚Å•
 •`‰æ‚É‚Í OpenGL for Embedded Systems (OpenGL ES) 2.0 ‚ğg—p‚µ‚Ü‚·B
 ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Ì\¬‚ÍA GLSurfaceView ‚ÅƒT[ƒtƒFƒX‚ğì¬‚µA•`‰æˆ—‚Í NDK ‚É“Š‚°‚Ü‚·B
 NDK ‚ÍA v9 •Ó‚è‚ğg—p‚µ‚ÄŠJ”­‚ği‚ß‚Ä‚¢‚«‚Ü‚·‚ªA‹C‚ª•Ï‚í‚é‚©‚à‚µ‚ê‚Ü‚¹‚ñB
-Œ»İ‚ÍAOŠpŒ`‚Ìƒ|ƒŠƒSƒ“‚ğ2–‡‡‚í‚¹‚ÄlŠpŒ`‚ğì¬‚µA‚»‚±‚É“K“–‚ÈƒeƒNƒXƒ`ƒƒ‚ğ“\‚è•t‚¯‚Ä‚¢‚Ü‚·B
-æ“¾‚·‚é‰æ‘œƒtƒ@ƒCƒ‹‚Í /sdcard/MMD/creeper_512x512.bmp ‚Å‚·B
-ƒtƒ@ƒCƒ‹–¼‚ÍŒÅ’è‚ÅA‚»‚±‚É24ƒrƒbƒg‚Ì BMP Œ`®‚Ìƒtƒ@ƒCƒ‹‚ğ”z’u‚·‚ê‚ÎÀs‚É•`‰æ‚³‚ê‚Ü‚·B
-‚»‚ê‚ÆA /sdcard/MMD/pmd/Normal.pmd ‚Æ‚¢‚¤ PMD Œ`®ƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚ñ‚Åƒ‚ƒfƒ‹‚ğ•`‰æ‚µ‚Ü‚·B
+
+\¬
+----
+“®ì‚É•K—v‚Èƒtƒ@ƒCƒ‹‚Ì\¬
+* /sdcard/MMD/creeper_512x512.bmp
+* /sdcard/MMD/pmd/Normal.pmd
+    * PMD ƒtƒ@ƒCƒ‹“à‚Å•K—v‚Æ‚³‚ê‚éƒtƒ@ƒCƒ‹ƒZƒbƒg
+
+“Ç‚İ‚İ‰Â”\‚È‰æ‘œƒtƒ@ƒCƒ‹
+* BMP (24ƒrƒbƒgƒrƒbƒgƒ}ƒbƒv)
+
+“®ì
+----
+* /sdcard/MMD/creeper_512x512.bmp ‚ğ“Ç‚İ‚İ‰œ‚Ì‚Ù‚¤‚É•`‰æ
+* /sdcard/MMD/pmd/Normal.pmd ‚ğ“Ç‚İ‚İ‚»‚Ì‚Ü‚Ü•`‰æ
 
 ƒXƒNƒŠ[ƒ“ƒVƒ‡ƒbƒg
 ------------------

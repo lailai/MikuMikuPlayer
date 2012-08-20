@@ -58,7 +58,6 @@ int CPmd::load(char *szFileName)
     mlpVertex = new PMDVERTEX[mdwVertexCount];
     for (unsigned long i = 0; i < mdwVertexCount; i++) {
         fread(mlpVertex[i].fPosition, sizeof(float), 3, fp);
-        mlpVertex[i].fPosition[2] = -mlpVertex[i].fPosition[2];
         fread(mlpVertex[i].fNormalVector, sizeof(float), 3, fp);
         fread(mlpVertex[i].fUv, sizeof(float), 2, fp);
         fread(mlpVertex[i].wBoneNumber, sizeof(unsigned short), 2, fp);

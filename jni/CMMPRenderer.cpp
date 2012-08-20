@@ -86,10 +86,10 @@ void CMMPRenderer::init(void)
 
     // クリーパー用ポリゴン
     GLfloat  pfVertices[] = {
-            -10.0f, 20.0f, -10.0f, 1.0f, 0.0f,
-            -10.0f, 0.0f, -10.0f, 1.0f, 1.0f,
-            10.0f, 0.0f, -10.0f, 0.0f, 1.0f,
-            10.0f, 20.0f, -10.0f, 0.0f, 0.0f};
+            -10.0f, 20.0f, 10.0f, 0.0f, 0.0f,
+            -10.0f, 0.0f, 10.0f, 0.0f, 1.0f,
+            10.0f, 0.0f, 10.0f, 1.0f, 1.0f,
+            10.0f, 20.0f, 10.0f, 1.0f, 0.0f};
     GLushort pIndices[] = {0, 2, 1, 0, 3, 2};
     glGenBuffers(1, &hVbo);
     glBindBuffer(GL_ARRAY_BUFFER, hVbo);
@@ -153,7 +153,7 @@ void CMMPRenderer::render(void)
     glFrontFace(GL_CW);
 
     // カリング(表のみ描画)
-    glCullFace(GL_FRONT);
+    glCullFace(GL_BACK);
 
     // テクスチャのメモリアラインメント設定
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -181,7 +181,7 @@ void CMMPRenderer::render(void)
     } else if (g_fRad < 0) {
         g_fRad += 2 * 3.14159265f;
     }
-    gluLookAt(50.0f * sin(g_fRad), 20.0f, 50.0f * cos(g_fRad), 0.0f, 12.0f, 0.0f, 0.0f, 1.0f, 0.0f, viewMatrix);
+    gluLookAt(50.0f * sin(g_fRad), 20.0f, -50.0f * cos(g_fRad), 0.0f, 12.0f, 0.0f, 0.0f, 1.0f, 0.0f, viewMatrix);
 
     // 変数の設定
     glUniformMatrix4fv(uniforms[UNIFORM_PROJ_MAT], 1, GL_FALSE, pfIdentity);
